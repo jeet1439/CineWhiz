@@ -4,13 +4,16 @@ import React from 'react';
 import { ActivityIndicator, FlatList, Image, ScrollView, StatusBar, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import icon from '../../assets/images/icon.png';
+import Card from '../../components/Card.jsx';
+import SearchBar from '../../components/searchBar.jsx';
 import { fetchMovie } from '../../services/api.js';
 import useFetch from '../../services/useFetch.js';
-import Card from '../components/Card.jsx';
-import SearchBar from '../components/searchBar.jsx';
+
 const index = () => {
 
   const router = useRouter();
+  
+
 
   //  useEffect(() => {
   //   fetchMovie({ query: '' })
