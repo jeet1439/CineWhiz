@@ -1,8 +1,33 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { StatusBar, Text, View } from 'react-native';
-
+import { ActivityIndicator, FlatList, Image, ScrollView, StatusBar, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import icon from '../../assets/images/icon.png';
+import { fetchMovie } from '../../services/api.js';
+import useFetch from '../../services/useFetch.js';
+import Card from '../components/Card.jsx';
+import SearchBar from '../components/searchBar.jsx';
 const index = () => {
+
+  const router = useRouter();
+
+  //  useEffect(() => {
+  //   fetchMovie({ query: '' })
+  //     .then((data) => {
+  //       console.log("Fetched data:", data);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching:", err);
+  //     });
+  // }, []);
+
+  const fetchPopularMovies = async () => await fetchMovie({ query: '' });
+
+  const { data: movies, loading: moviesLoading, error: moviesError } = useFetch(fetchPopularMovies);
+
+  // console.log(movies);
+
   return (
     <LinearGradient
       colors={['#0f015c', '#030014']}
@@ -10,10 +35,52 @@ const index = () => {
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 0.4 }}
     >
-    <StatusBar backgroundColor="#1c0d41" barStyle="light-content" />
-    <View className='flex-1 justify-center items-center'>
-      <Text className='text-3xl text-gray-200'>Index</Text>
-    </View>
+      <StatusBar backgroundColor="#1c0d41" barStyle="light-content" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <View className='flex-1'>
+          <ScrollView className='flex-1 px-4' showsVerticalScrollIndicator={false} contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}>
+            <Image source={icon} className='w-12 h-10 mt-5 mb-5 mx-auto' />
+            <>
+              {moviesLoading ? (
+                <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20, alignSelf: 'center' }} />
+              ) : moviesError ? (
+                <Text>Error: {moviesError?.message}</Text>
+              ) : (
+                <View className='flex-1 mt-5'>
+                  <SearchBar
+                    onPress={() => router.push("/search")}
+                    placeholder="Search for a movie"
+                  />
+                  <>
+                  <Text className="text-lg text-stone-50 font-bold mt-5 mb-3">
+                    Latest movies
+                  </Text>
+                  <FlatList 
+                    data={movies}
+                    showsVerticalScrollIndicator={false}
+                    scrollEnabled={false}
+                    renderItem={({item}) => (
+                     <Card 
+                     {...item}
+                     />
+                    )}
+                    keyExtractor={(item) => item.id.toString()}
+                    numColumns={3}
+                    columnWrapperStyle={{
+                      justifyContent: 'flex-start',
+                      gap: 20,
+                      paddingRight: 5,
+                      marginBottom: 10
+                    }}
+                    className='mt-2 pb-32'
+                   />
+                  </>
+                </View>
+              )}
+            </>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 };

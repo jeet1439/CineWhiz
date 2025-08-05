@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-  ]
+, "app/movie/[id].jsx", "app/_layout.jsx", "app/(tabs)/search.jsx", "app/(tabs)/saved.jsx", "app/(tabs)/profile.jsx", "app/(tabs)/index.jsx", "app/(tabs)/_layout.jsx"  ]
 }
