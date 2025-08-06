@@ -1,35 +1,32 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ActivityIndicator, FlatList, Image, ScrollView, StatusBar, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import icon from '../../assets/images/icon.png';
 import Card from '../../components/Card.jsx';
+import TrendingCard from '../../components/TrendingCard.jsx';
 import SearchBar from '../../components/searchBar.jsx';
 import { fetchMovie } from '../../services/api.js';
+import { getTrendingMovies } from '../../services/appwrite.js';
 import useFetch from '../../services/useFetch.js';
 
 const index = () => {
 
   const router = useRouter();
-  
 
-
-  //  useEffect(() => {
-  //   fetchMovie({ query: '' })
-  //     .then((data) => {
-  //       console.log("Fetched data:", data);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error fetching:", err);
-  //     });
-  // }, []);
+  const { data: trendingMovies, loading: trendingLoading, error: trendingError , refetch: refetchTrending} = useFetch(getTrendingMovies, false);
 
   const fetchPopularMovies = async () => await fetchMovie({ query: '' });
 
   const { data: movies, loading: moviesLoading, error: moviesError } = useFetch(fetchPopularMovies);
 
-  // console.log(movies);
+    useFocusEffect(
+    useCallback(() => {
+      refetchTrending();
+    }, [])
+  );
 
   return (
     <LinearGradient
@@ -54,29 +51,53 @@ const index = () => {
                     onPress={() => router.push("/search")}
                     placeholder="Search for a movie"
                   />
+                  {
+                    trendingLoading && (
+                      <ActivityIndicator className='mt-10'/>
+                    )
+                  }
+                  {trendingMovies && !trendingLoading && (
+                    <View className='mt-10'>
+                      <Text className='text-lg text-white font-bold mb-3'>Trending movies</Text>
+                      <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        className="mb-4 mt-3"
+                        data={trendingMovies}
+                        contentContainerStyle={{
+                          gap: 5,
+                        }}
+                        renderItem={({ item, index }) => (
+                          <TrendingCard movie={item} index={index} />
+                        )}
+                        keyExtractor={(item) => item.movie_id.toString()}
+                        ItemSeparatorComponent={() => <View className="w-4" />}
+                      />
+                    </View>
+                  )}
                   <>
-                  <Text className="text-lg text-stone-50 font-bold mt-5 mb-3">
-                    Latest movies
-                  </Text>
-                  <FlatList 
-                    data={movies}
-                    showsVerticalScrollIndicator={false}
-                    scrollEnabled={false}
-                    renderItem={({item}) => (
-                     <Card 
-                     {...item}
-                     />
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                    numColumns={3}
-                    columnWrapperStyle={{
-                      justifyContent: 'flex-start',
-                      gap: 20,
-                      paddingRight: 5,
-                      marginBottom: 10
-                    }}
-                    className='mt-2 pb-32'
-                   />
+                    <Text className="text-lg text-stone-50 font-bold mt-5 mb-3">
+                      Latest movies
+                    </Text>
+                    <FlatList
+                      data={movies}
+                      showsVerticalScrollIndicator={false}
+                      scrollEnabled={false}
+                      renderItem={({ item }) => (
+                        <Card
+                          {...item}
+                        />
+                      )}
+                      keyExtractor={(item) => item.id.toString()}
+                      numColumns={3}
+                      columnWrapperStyle={{
+                        justifyContent: 'flex-start',
+                        gap: 20,
+                        paddingRight: 5,
+                        marginBottom: 10
+                      }}
+                      className='mt-2 pb-32'
+                    />
                   </>
                 </View>
               )}

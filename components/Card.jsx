@@ -11,7 +11,7 @@ const Card = ({ id, poster_path, title, vote_average, release_date }) => {
     // console.log(release_date)
     return (
 
-        <Link href={`/movie/${id}`}>
+        <Link href={`/movie/${id}`} asChild>
             <TouchableOpacity className='w-[30%]'>
                 <Image
                     source={{

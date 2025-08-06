@@ -37,6 +37,7 @@ export const updateSearchCount = async (query, movie) => {
         title: movie.title,
         count: 1,
         poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        release: movie.release_date
       });
     }
   } catch (error) {
@@ -46,5 +47,19 @@ export const updateSearchCount = async (query, movie) => {
 };
 
 export const getTrendingMovies = async () => {
-  
+  try {
+    const result = await database.listDocuments(
+      DATABASE_ID,
+      COLLECTION_ID,
+      [
+        Query.limit(5),
+        Query.orderDesc("count"),
+      ]
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.error("Failed to fetch trending movies:", error);
+    return undefined;
+  }
 };
