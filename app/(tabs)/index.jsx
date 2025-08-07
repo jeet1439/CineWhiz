@@ -20,11 +20,12 @@ const index = () => {
 
   const fetchPopularMovies = async () => await fetchMovie({ query: '' });
 
-  const { data: movies, loading: moviesLoading, error: moviesError } = useFetch(fetchPopularMovies);
+  const { data: movies, loading: moviesLoading, error: moviesError, refetch: refetchPopular } = useFetch(fetchPopularMovies);
 
     useFocusEffect(
     useCallback(() => {
       refetchTrending();
+      refetchPopular();
     }, [])
   );
 

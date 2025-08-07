@@ -37,6 +37,7 @@ const Details = () => {
   // console.log(id);
   const [modalVisible, setModalVisible] = useState(false);
   const [trailerUrl, setTrailerUrl] = useState(null);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id)
@@ -178,10 +179,17 @@ const Details = () => {
                   allowsFullscreenVideo
                   style={{ flex: 1 }}
                 /> */}
+                {!isVideoReady && (
+                  <View className="absolute inset-0 bg-black/80 justify-center items-center z-40">
+                    <ActivityIndicator size="large" color="#fff" />
+                    <Text className="text-white mt-2">Loading trailer...</Text>
+                  </View>
+                )}
                 <YoutubePlayer
                   height={300}
                   width={"100%"}
                   play={true}
+                  onReady={() => setIsVideoReady(true)}
                   videoId={extractYouTubeVideoId(trailerUrl)}
                   initialPlayerParams={{
                     controls: false,
