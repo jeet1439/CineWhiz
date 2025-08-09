@@ -51,7 +51,7 @@ const _layout = () => {
           title: 'Saved',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bookmark-outline" size={size} color={color} />
+            <Ionicons name="film" size={size} color={color} />
           ),
         }}
       />

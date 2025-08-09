@@ -8,6 +8,7 @@ import {
     ImageBackground,
     KeyboardAvoidingView,
     Platform,
+    StatusBar,
     Text,
     TextInput,
     TouchableOpacity,
@@ -36,11 +37,12 @@ export default function Signup() {
             style={{ flex: 1 }}
             resizeMode="cover"
         >
+         <StatusBar hidden />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
-                <View className="flex-1 bg-black/40 justify-center">
+                <View className="flex-1 bg-black/40  justify-center">
                     <View className="flex-1 justify-end items-center">
                         <Image
                             source={require('../../assets/images/Name.png')}
@@ -48,11 +50,11 @@ export default function Signup() {
                         />
                         <Text className="text-stone-300 text-xl ">Find your next favorite film—faster.</Text>
                     </View>
-                    <View className="flex-1 px-6 pt-14">
-                        <View className="flex-1 bg-black/70 rounded-3xl px-4 pt-6 mb-5 shadow-md">
+                    <View className="flex-1 px-6 pt-14 mb-12">
+                        <View className="flex-1 bg-black/70 rounded-3xl px-4 pt-6 mb-3 shadow-md">
 
                             <View className="mb-5">
-                                <Text className="text-sm text-stone-100 mb-1">Username</Text>
+                                <Text className="text-sm text-stone-100">Username</Text>
                                 <View className="flex-row items-center border border-gray-300 rounded-md px-3 py-2">
                                     <Ionicons name="person-outline" size={20} color="#1e40af" />
                                     <TextInput

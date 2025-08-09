@@ -12,15 +12,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { WebView } from "react-native-webview";
-
 // import useFetch from "@/services/usefetch";
 // import { fetchMovieDetails } from "@/services/api.js";
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { fetchMovieDetails, fetchTrailerUrl } from "../../services/api.js";
 import useFetch from "../../services/useFetch.js";
+import { useAuthStore } from "../../store/authStore.js";
 
 const MovieInfo = ({ label, value }) => (
   <View className="flex-col items-start justify-center mt-5">
@@ -39,9 +39,13 @@ const Details = () => {
   const [trailerUrl, setTrailerUrl] = useState(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
 
+  const { user, token } = useAuthStore();
+
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id)
   );
+
+//  console.log(movie);
 
   const extractYouTubeVideoId = (url) => {
     const match = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
@@ -58,6 +62,37 @@ const Details = () => {
       alert("Trailer not available");
     }
   };
+
+  const logWatchedMovie = async (movieData, userId, token) => {
+    try {
+      const res = await fetch("https://mdnt-back-serv.onrender.com/api/movie", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({
+          movieData,
+          userId
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        console.error("Failed to log movie:", data.error);
+      } else {
+        console.log("Movie logged successfully");
+      }
+    } catch (error) {
+      console.error("Error logging movie:", error.message);
+    }
+  };
+
+  useEffect(() => {
+  if (movie?.id) {
+    logWatchedMovie(movie, user._id, token);
+  }
+}, [movie?.id]);
 
   const rating = Math.round(movie?.vote_average ?? 0);
   const fullStars = Math.floor(rating);
@@ -99,7 +134,6 @@ const Details = () => {
             <TouchableOpacity className="absolute bottom-5 right-5 rounded-full size-14 bg-white flex items-center justify-center"
               onPress={handlePlay}
             >
-
               <Ionicons name="play" size={28} color="black" />
             </TouchableOpacity>
           </View>
@@ -157,7 +191,6 @@ const Details = () => {
             />
           </View>
         </ScrollView>
-      </LinearGradient>
       {modalVisible && (
         <Modal
           animationType="fade"
@@ -209,6 +242,7 @@ const Details = () => {
           </>
         </Modal>
       )}
+      </LinearGradient>
 
 
     </View>

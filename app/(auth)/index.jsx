@@ -8,6 +8,7 @@ import {
     ImageBackground,
     KeyboardAvoidingView,
     Platform,
+    StatusBar,
     Text,
     TextInput,
     TouchableOpacity,
@@ -39,6 +40,7 @@ export default function Login() {
             style={{ flex: 1 }}
             resizeMode="cover"
         >
+         <StatusBar hidden />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? "padding" : "height"}

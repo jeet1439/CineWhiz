@@ -11,7 +11,7 @@ export const useAuthStore = create((set, get) => ({
   signup: async(username, email, password) =>{
     set({isLoading : true});
     try {
-        const res = await fetch(`http:/192.168.0.102:3000/api/auth/signup`, {
+        const res = await fetch(`https://mdnt-back-serv.onrender.com/api/auth/signup`, {
             method: "POST",
             headers:{
                 "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export const useAuthStore = create((set, get) => ({
   login: async( email, password ) => {
     set({isLoading: true});
     try {
-        const res = await fetch(`http:/192.168.0.102:3000/api/auth/login`, {
+        const res = await fetch(`https://mdnt-back-serv.onrender.com/api/auth/login`, {
             method: "POST",
             headers:{
                 "Content-Type": "application/json",
